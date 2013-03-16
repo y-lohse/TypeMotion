@@ -27,8 +27,13 @@ $(function(){
 		var lineText = '';
 		
 		$spans.each(function(index){
-			if (index < lineBreaks[currentBreak] || currentBreak >= lineBreaks.length){
+			if (index < lineBreaks[currentBreak]){
 				lineText += this.textContent+' ';
+			}
+			else if (currentBreak >= lineBreaks.length){
+				//the last line is ignored as it will probably be way shorter
+				//than the rest and thus screw up the stats
+				return false;
 			}
 			else {
 				lines.push(lineText);
@@ -36,8 +41,5 @@ $(function(){
 				currentBreak++;
 			}
 		});
-		lines.push(lineText);
-		
-		console.log(lines);
 	});
 });
