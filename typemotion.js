@@ -42,4 +42,12 @@ $(function(){
 			}
 		});
 	});
+	
+	//computing measures
+	var measures = [];
+	for (var i = 0, l = lines.length; i < l; i++){
+		measures.push(lines[i].length);
+	}
+	
+	console.log(measures);
 });
