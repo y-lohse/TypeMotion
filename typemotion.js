@@ -21,6 +21,23 @@ $(function(){
 			}
 		});
 		
-		console.log(lineBreaks);
+		//retrieving the actual lines of text
+		var lines = [];
+		var currentBreak = 0;
+		var lineText = '';
+		
+		$spans.each(function(index){
+			if (index < lineBreaks[currentBreak] || currentBreak >= lineBreaks.length){
+				lineText += this.textContent+' ';
+			}
+			else {
+				lines.push(lineText);
+				lineText = this.textContent+' ';
+				currentBreak++;
+			}
+		});
+		lines.push(lineText);
+		
+		console.log(lines);
 	});
 });
