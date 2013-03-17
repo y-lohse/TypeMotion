@@ -25,7 +25,7 @@ $(function(){
 	
 	//wrapping every word inside paragraphs inside spans
 	$collection.each(function(){
-		$(this).html('<span>'+$(this).html().split(' ').join('</span> <span>')+'</span>');
+		$(this).html('<span class="tm">'+$(this).html().split(' ').join('</span> <span class="tm">')+'</span>');
 	});
 	
 	var tooltipFollow = function(event){
@@ -93,5 +93,15 @@ $(function(){
 	}, function(){
 		$tooltip.hide();
 		$(this).off('mousemove', tooltipFollow);
+	});
+	
+	//shutting down
+	var cleanup = function(){
+		alert('cleaning');
+	};
+	
+	$exitButton.click(cleanup);
+	$(document).keyup(function(event){
+		if (event.which == 27) cleanup();
 	});
 });
