@@ -46,11 +46,13 @@ $(function(){
 				return false;
 			}
 			else {
-				lines.push(lineText);
+				lines.push(lineText.substring(0, lineText.length-1));
 				lineText = this.textContent+' ';
 				currentBreak++;
 			}
 		});
+		
+		console.log(lines);
 		
 		//computing measures
 		var measures = [];
