@@ -1,7 +1,9 @@
 $(function(){
 	//setup
+	$collection = $('p');
+	
 	//wrapping every word inside paragraphs inside spans
-	$('p').each(function(){
+	$collection.each(function(){
 		$(this).html('<span>'+$(this).text().split(' ').join('</span> <span>')+'</span>');
 	});
 	
@@ -10,11 +12,12 @@ $(function(){
 	};
 	
 	//calculating teh measure
-	$('p').hover(function(event){
+	$collection.hover(function(event){
+		//show the toolip
 		$('#tm-tooltip').show();
 		$(this).on('mousemove', tooltipFollow);
 		
-		//finding out where the line break
+		//finding out where the lines break
 		var text = $(this).text(),
 			$spans = $(this).find('span'),
 			prevOffset = $spans.first().offset().top,
