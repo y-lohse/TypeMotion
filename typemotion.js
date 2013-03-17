@@ -97,7 +97,18 @@ $(function(){
 	
 	//shutting down
 	var cleanup = function(){
-		alert('cleaning');
+		//removing all created spans
+		$('span.tm').each(function(){
+			$(this.childNodes).unwrap();
+		});
+		
+		//cleaning event listeners
+		$collection.unbind('mouseenter mosueleave');
+		$(document).unbind('keyup');
+		
+		//deleting UI
+		$tooltip.remove();
+		$exitButton.remove();
 	};
 	
 	$exitButton.click(cleanup);
