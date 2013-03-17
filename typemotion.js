@@ -1,7 +1,7 @@
 $(function(){
 	//setup
 	$collection = $('p');
-	$tooltip = $('<div>').attr('id', 'tm-tooltip');
+	$tooltip = $('<div>');
 	$tooltip.css({
 		position: 'absolute',
 		background: '#242424',
