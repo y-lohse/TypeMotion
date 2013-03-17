@@ -5,8 +5,15 @@ $(function(){
 		$(this).html('<span>'+$(this).text().split(' ').join('</span> <span>')+'</span>');
 	});
 	
+	var tooltipFollow = function(event){
+		$('#tm-tooltip').css({top: event.pageY+5, left: event.pageX+5});
+	};
+	
 	//calculating teh measure
-	$('p').click(function(){
+	$('p').hover(function(event){
+		$('#tm-tooltip').show();
+		$(this).on('mousemove', tooltipFollow);
+		
 		//finding out where the line break
 		var text = $(this).text(),
 			$spans = $(this).find('span'),
@@ -49,5 +56,8 @@ $(function(){
 		}
 		
 		console.log(measures);
+	}, function(){
+		$('#tm-tooltip').hide();
+		$(this).off('mousemove', tooltipFollow);
 	});
 });
