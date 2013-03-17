@@ -1,6 +1,9 @@
 $(function(){
 	//setup
 	$collection = $('p');
+	$tooltip = $('<div>').attr('id', 'tm-tooltip');
+	
+	$('body').append($tooltip);
 	
 	//wrapping every word inside paragraphs inside spans
 	$collection.each(function(){
@@ -8,13 +11,13 @@ $(function(){
 	});
 	
 	var tooltipFollow = function(event){
-		$('#tm-tooltip').css({top: event.pageY+5, left: event.pageX+5});
+		$tooltip.css({top: event.pageY+5, left: event.pageX+5});
 	};
 	
 	//calculating teh measure
 	$collection.hover(function(event){
 		//show the toolip
-		$('#tm-tooltip').show();
+		$tooltip.show();
 		$(this).on('mousemove', tooltipFollow);
 		
 		//finding out where the lines break
@@ -59,9 +62,18 @@ $(function(){
 			measures.push(lines[i].length);
 		}
 		
-		console.log(measures);
+		//populating the tooltip
+		var sum = 0;
+		for (var i = 0, l = measures.length; i < l; i++) sum += measures[i];
+		
+		var text = 'average: '+(sum/measures.length).toPrecision(4)+
+					'<br />'+
+					'min: '+Math.min.apply(null, measures)+
+					' — '+
+					'max: '+Math.max.apply(null, measures);
+		$tooltip.html(text);
 	}, function(){
-		$('#tm-tooltip').hide();
+		$tooltip.hide();
 		$(this).off('mousemove', tooltipFollow);
 	});
 });
