@@ -1,8 +1,8 @@
 $(function(){
 	//setup
-	$collection = $('p');
-	$tooltip = $('<div>');
-	$tooltip.css({
+	var $collection = $('p');
+	
+	var commonStyles = {
 		position: 'absolute',
 		background: '#242424',
 		border: '2px solid #c7c7c7',
@@ -11,10 +11,17 @@ $(function(){
 		'text-align': 'center',
 		color: '#fff',
 		'font-size': '18px'
-	});
+	};
+	var $tooltip = $('<div>');
+	$tooltip.css(commonStyles);
 	$tooltip.hide();
 	
-	$('body').append($tooltip);
+	
+	var $exitButton = $('<div>');
+	$exitButton.css($.extend({}, commonStyles, {top: 10, right: 10, cursor: 'pointer'}));
+	$exitButton.html('Exit TypeMotion');
+	
+	$('body').append($tooltip).append($exitButton);
 	
 	//wrapping every word inside paragraphs inside spans
 	$collection.each(function(){
