@@ -2,6 +2,17 @@ $(function(){
 	//setup
 	$collection = $('p');
 	$tooltip = $('<div>').attr('id', 'tm-tooltip');
+	$tooltip.css({
+		position: 'absolute',
+		background: '#242424',
+		border: '2px solid #c7c7c7',
+		'border-radius': '10px',
+		padding: '10px 15px',
+		'text-align': 'center',
+		color: '#fff',
+		'font-size': '18px'
+	});
+	$tooltip.hide();
 	
 	$('body').append($tooltip);
 	
