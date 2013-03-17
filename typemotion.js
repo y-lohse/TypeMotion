@@ -4,7 +4,7 @@ $(function(){
 	
 	//wrapping every word inside paragraphs inside spans
 	$collection.each(function(){
-		$(this).html('<span>'+$(this).text().split(' ').join('</span> <span>')+'</span>');
+		$(this).html('<span>'+$(this).html().split(' ').join('</span> <span>')+'</span>');
 	});
 	
 	var tooltipFollow = function(event){
@@ -18,7 +18,7 @@ $(function(){
 		$(this).on('mousemove', tooltipFollow);
 		
 		//finding out where the lines break
-		var text = $(this).text(),
+		var text = escape($(this).text()),
 			$spans = $(this).find('span'),
 			prevOffset = $spans.first().offset().top,
 			lineBreaks = [];
@@ -46,13 +46,12 @@ $(function(){
 				return false;
 			}
 			else {
-				lines.push(lineText.substring(0, lineText.length-1));
-				lineText = this.textContent+' ';
+				//removing trailing space and any tabs or new lines
+				lines.push(lineText.substring(0, lineText.length-1).replace(/(\t|\n)/g, ''));
+				lineText = (this.innerText || this.textContent)+' ';
 				currentBreak++;
 			}
 		});
-		
-		console.log(lines);
 		
 		//computing measures
 		var measures = [];
