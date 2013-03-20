@@ -22,9 +22,87 @@
 	p{
 		width: 500px;
 	}
+	#tm-adjust{
+		position: absolute;
+		background: #242424;
+		border: 2px solid #c7c7c7;
+		border-radius: 10px;
+		padding: 10px 15px;
+		color: #fff;
+		font-family: tahoma;
+		font-size: 16px;
+	}
+	#tm-adjust h1{
+		font-weight: normal;
+		font-size: 26px;
+		margin: 0 0 10px;
+		cursor: move;
+	}
+	#tm-adjust h2{
+		font-size: 18px;
+		font-weight: normal;
+		text-transform: uppercase;
+		padding: 0;
+		margin-top: 25px;
+		margin-bottom: 5px;
+	}
+	#tm-adjust h2:first-of-type{
+		margin-top: 0;
+	}
+	#tm-adjust ul{
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	#tm-adjust li{
+		margin-bottom: 3px;
+	}
+	#tm-adjust input[type="number"]{
+		width: 70px;
+		text-align: right;
+		margin-left: 20px;
+		margin-right: 5px;
+		background: rgba(255,255,255,.8);
+		border: 1px solid #ddd;
+		border-radius: 4px;
+	}
 	</style>
 </head>
 <body>
+
+	<div id="tm-adjust">
+		<h1>
+			TypeMotion
+		</h1>
+		<h2>
+			Measure
+		</h2>
+		<ul>
+			<li>
+				Average : 65
+			</li>
+			<li>
+				Minimum : 60
+			</li>
+			<li>
+				Maximum : 70
+			</li>
+			<li>
+				Total signs : 580540
+			</li>
+		</ul>
+		<h2>
+			Vertical Rythm
+		</h2>
+		<ul>
+			<li>
+				Font-size : <input type="number" value="16" />px
+			</li>
+			<li>
+				Line height : <input type="number" value="16" />px
+			</li>
+		</ul>
+	</div>
 
 	<h1>
 		Alice in Wonderland
