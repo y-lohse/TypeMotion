@@ -8,20 +8,61 @@ $(function(){
 		border: '2px solid #c7c7c7',
 		'border-radius': '10px',
 		padding: '10px 15px',
-		'text-align': 'center',
 		color: '#fff',
-		'font-size': '18px'
+		'font-size': '18px',
+		'font-family': 'tahoma',
 	};
+	var h1Styles = {
+		'font-weight': 'normal',
+		'font-size': '26px',
+		'margin': '0 0 10px',
+		'cursor': 'move'
+	};
+	var h2Styles = {
+		'font-size': '18px',
+		'font-weight': 'normal',
+		'text-transform': 'uppercase',
+		'padding': 0,
+		'margin-top': '25px',
+		'margin-bottom': '5px'
+	};
+	
+	//creating tooltip
 	var $tooltip = $('<div>');
-	$tooltip.css(commonStyles);
+	$tooltip.css($.extend({}, commonStyles, {'text-align': 'center'}));
 	$tooltip.hide();
+	
+	//creating motion adjuster
+	var $adjuster = $('<div>');
+	$adjuster.css(commonStyles);
+	var $h1 = $('<h1>').html('TypeMotion').css(h1Styles);
+	var $measureTitle = $('<h2>').html('Measure').css($.extend({}, h2Styles, {'margin-top': 0}));
+	var $rythmTitle = $('<h2>').html('Vertical Rythm').css(h2Styles);
+	$adjuster.append($h1).append($measureTitle);
+	
+	var $measureList = $('<ul>');
+	var $liBase = $('<li>');
+	$measureList.append($liBase.clone().html('Average : <span></span>'));
+	$measureList.append($liBase.clone().html('Minimum : <span></span>'));
+	$measureList.append($liBase.clone().html('Maximum : <span></span>'));
+	$measureList.append($liBase.clone().html('Total signs : <span></span>'));
+	$adjuster.append($measureList);
+	
+	var $rythmList = $('<ul>');
+	$rythmList.append($liBase.clone().html('Font size :'));
+	$rythmList.append($liBase.clone().html('Line height :'));
+	$adjuster.append($rythmTitle);
+	$adjuster.append($rythmList);
+	
+	
+	//$adjuster.hide();
 	
 	
 	var $exitButton = $('<div>');
-	$exitButton.css($.extend({}, commonStyles, {top: 10, right: 10, cursor: 'pointer'}));
+	$exitButton.css($.extend({}, commonStyles, {top: 10, right: 10, cursor: 'pointer', 'text-align': 'center'}));
 	$exitButton.html('Exit TypeMotion');
 	
-	$('body').append($tooltip).append($exitButton);
+	$('body').append($tooltip).append($exitButton).append($adjuster);
 	
 	//wrapping every word inside paragraphs inside spans
 	$collection.each(function(){
