@@ -3,12 +3,12 @@ $(function(){
 	var $collection = $('p');
 	
 	var commonStyles = {
-		position: 'absolute',
-		background: '#242424',
-		border: '2px solid #c7c7c7',
+		'position': 'absolute',
+		'background': '#242424',
+		'border': '2px solid #c7c7c7',
 		'border-radius': '10px',
-		padding: '10px 15px',
-		color: '#fff',
+		'padding': '10px 15px',
+		'color': '#fff',
 		'font-size': '18px',
 		'font-family': 'tahoma',
 	};
@@ -26,6 +26,21 @@ $(function(){
 		'margin-top': '25px',
 		'margin-bottom': '5px'
 	};
+	var listStyles = {
+		'padding': 0,
+		'margin': 0,
+		'list-style': 'none'
+	};
+	var inputStyles = {
+		'width': '70px',
+		'text-align': 'right',
+		'margin-left': '20px',
+		'margin-right': '5px',
+		'padding': '2px 4px',
+		'background': 'rgba(255,255,255,.8)',
+		'border': '1px solid #ddd',
+		'border-radius': '4px'
+	};
 	
 	//creating tooltip
 	var $tooltip = $('<div>');
@@ -40,29 +55,29 @@ $(function(){
 	var $rythmTitle = $('<h2>').html('Vertical Rythm').css(h2Styles);
 	$adjuster.append($h1).append($measureTitle);
 	
-	var $measureList = $('<ul>');
-	var $liBase = $('<li>');
+	var $liBase = $('<li>').css({'margin-bottom': '3px'});
+	
+	var $measureList = $('<ul>').css(listStyles);
 	$measureList.append($liBase.clone().html('Average : <span></span>'));
 	$measureList.append($liBase.clone().html('Minimum : <span></span>'));
 	$measureList.append($liBase.clone().html('Maximum : <span></span>'));
 	$measureList.append($liBase.clone().html('Total signs : <span></span>'));
 	$adjuster.append($measureList);
 	
-	var $rythmList = $('<ul>');
-	$rythmList.append($liBase.clone().html('Font size :'));
-	$rythmList.append($liBase.clone().html('Line height :'));
+	var $rythmList = $('<ul>').css(listStyles);
+	$rythmList.append($liBase.clone().html('Font size : <input id="tm-fontsize" type="number" />px'));
+	$rythmList.append($liBase.clone().html('Line height : <input id="tm-lineheight" type="number" />px'));
 	$adjuster.append($rythmTitle);
 	$adjuster.append($rythmList);
 	
-	
 	//$adjuster.hide();
-	
 	
 	var $exitButton = $('<div>');
 	$exitButton.css($.extend({}, commonStyles, {top: 10, right: 10, cursor: 'pointer', 'text-align': 'center'}));
 	$exitButton.html('Exit TypeMotion');
 	
 	$('body').append($tooltip).append($exitButton).append($adjuster);
+	$('#tm-fontsize, #tm-lineheight').css(inputStyles);
 	
 	//wrapping every word inside paragraphs inside spans
 	$collection.each(function(){
