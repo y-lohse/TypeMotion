@@ -1,6 +1,8 @@
 $(function(){
 	//setup
-	var $collection = $('p');
+	var $collection = $('p'),
+		adjusterActive = false,
+		dragOffset = {top: 0, left: 0};
 	
 	var commonStyles = {
 		'position': 'absolute',
@@ -70,7 +72,7 @@ $(function(){
 	$adjuster.append($rythmTitle);
 	$adjuster.append($rythmList);
 	
-	//$adjuster.hide();
+	$adjuster.hide();
 	
 	var $exitButton = $('<div>');
 	$exitButton.css($.extend({}, commonStyles, {top: 10, right: 10, cursor: 'pointer', 'text-align': 'center'}));
@@ -88,8 +90,24 @@ $(function(){
 		$tooltip.css({top: event.pageY+5, left: event.pageX+5});
 	};
 	
-	//calculating teh measure
+	var adjusterDrag = function(event){
+		$adjuster.css({top: event.pageY-dragOffset.top, left: event.pageX-dragOffset.left});
+	}
+	
+	//Adjuster behavior
+	$h1.mousedown(function(event){
+		var adjusterOffset = $adjuster.offset();
+		dragOffset.top = event.pageY-adjusterOffset.top;
+		dragOffset.left = event.pageX-adjusterOffset.left;
+		$(document).on('mousemove', adjusterDrag);
+	}).mouseup(function(){
+		$(document).off('mousemove', adjusterDrag);
+	});
+	
+	//calculating the measure
 	$collection.hover(function(event){
+		if (adjusterActive) return;
+		
 		//show the toolip
 		$tooltip.show();
 		$(this).on('mousemove', tooltipFollow);
@@ -151,6 +169,15 @@ $(function(){
 		$(this).off('mousemove', tooltipFollow);
 	});
 	
+	$collection.click(function(event){
+		$adjuster.show();
+		$adjuster.css({top: event.pageY+5, left: event.pageX+5});
+		
+		adjusterActive = true;
+		$tooltip.hide();
+		$(this).off('mousemove', tooltipFollow);
+	});
+	
 	//shutting down
 	var cleanup = function(){
 		//removing all created spans
@@ -159,7 +186,7 @@ $(function(){
 		});
 		
 		//cleaning event listeners
-		$collection.unbind('mouseenter mosueleave');
+		$collection.unbind('mouseenter mouseleave');
 		$(document).unbind('keyup');
 		
 		//deleting UI
