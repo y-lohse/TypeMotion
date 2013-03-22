@@ -2,6 +2,7 @@ $(function(){
 	//setup
 	var $collection = $('p'),
 		adjusterActive = false,
+		adjusterElement = null,
 		dragOffset = {top: 0, left: 0};
 	
 	var commonStyles = {
@@ -86,6 +87,7 @@ $(function(){
 		$(this).html('<span class="tm">'+$(this).html().split(' ').join('</span> <span class="tm">')+'</span>');
 	});
 	
+	//event handlers that need to be unregistered at some point
 	var tooltipFollow = function(event){
 		$tooltip.css({top: event.pageY+5, left: event.pageX+5});
 	};
@@ -170,12 +172,18 @@ $(function(){
 	});
 	
 	$collection.click(function(event){
-		$adjuster.show();
-		$adjuster.css({top: event.pageY+5, left: event.pageX+5});
-		
-		adjusterActive = true;
-		$tooltip.hide();
-		$(this).off('mousemove', tooltipFollow);
+		if (adjusterElement != this){
+			if (adjusterElement === null){
+				//if the adjuster was active for another element, don't move it
+				$adjuster.show();
+				$adjuster.css({top: event.pageY+5, left: event.pageX+5});
+			}
+			
+			adjusterActive = true;
+			adjusterElement = this;
+			$tooltip.hide();
+			$(this).off('mousemove', tooltipFollow);
+		}
 	});
 	
 	//shutting down
