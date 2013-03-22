@@ -132,7 +132,19 @@ $(function(){
 			measures.push(lines[i].length);
 		}
 		
-		return measures;
+		//computing the actual usefull informations
+		var sum = 0;
+		for (var i = 0, l = measures.length; i < l; i++) sum += measures[i];
+		var min = Math.min.apply(null, measures);
+		var max = Math.max.apply(null, measures);
+		
+		return {
+			measures: measures,
+			lines: measures.length,
+			min: min,
+			max: max,
+			sum: sum
+		};
 	}
 	
 	//event handlers that need to be unregistered at some point
@@ -165,14 +177,11 @@ $(function(){
 		var measures = getMeasures.apply(this);
 		
 		//populating the tooltip
-		var sum = 0;
-		for (var i = 0, l = measures.length; i < l; i++) sum += measures[i];
-		
-		var text = 'average: '+(sum/measures.length).toPrecision(4)+
+		var text = 'average: '+(measures.sum/measures.lines).toPrecision(4)+
 					'<br />'+
-					'min: '+Math.min.apply(null, measures)+
+					'min: '+measures.min+
 					' — '+
-					'max: '+Math.max.apply(null, measures);
+					'max: '+measures.max;
 		$tooltip.html(text);
 	}, function(){
 		$tooltip.hide();
@@ -187,6 +196,7 @@ $(function(){
 				$adjuster.css({top: event.pageY+5, left: event.pageX+5});
 			}
 			
+			//activating adjuster and hiding tooltip
 			adjusterActive = true;
 			adjusterElement = this;
 			$tooltip.hide();
