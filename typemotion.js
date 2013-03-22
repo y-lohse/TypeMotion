@@ -87,33 +87,9 @@ $(function(){
 		$(this).html('<span class="tm">'+$(this).html().split(' ').join('</span> <span class="tm">')+'</span>');
 	});
 	
-	//event handlers that need to be unregistered at some point
-	var tooltipFollow = function(event){
-		$tooltip.css({top: event.pageY+5, left: event.pageX+5});
-	};
-	
-	var adjusterDrag = function(event){
-		$adjuster.css({top: event.pageY-dragOffset.top, left: event.pageX-dragOffset.left});
-	}
-	
-	//Adjuster behavior
-	$h1.mousedown(function(event){
-		var adjusterOffset = $adjuster.offset();
-		dragOffset.top = event.pageY-adjusterOffset.top;
-		dragOffset.left = event.pageX-adjusterOffset.left;
-		$(document).on('mousemove', adjusterDrag);
-	}).mouseup(function(){
-		$(document).off('mousemove', adjusterDrag);
-	});
-	
-	//calculating the measure
-	$collection.hover(function(event){
-		if (adjusterActive) return;
-		
-		//show the toolip
-		$tooltip.show();
-		$(this).on('mousemove', tooltipFollow);
-		
+	//core function for measure calculation
+	var getMeasures = function(){
+		//this keyword refers to the html element
 		//finding out where the lines break
 		var text = escape($(this).text()),
 			$spans = $(this).find('span'),
@@ -155,6 +131,38 @@ $(function(){
 		for (var i = 0, l = lines.length; i < l; i++){
 			measures.push(lines[i].length);
 		}
+		
+		return measures;
+	}
+	
+	//event handlers that need to be unregistered at some point
+	var tooltipFollow = function(event){
+		$tooltip.css({top: event.pageY+5, left: event.pageX+5});
+	};
+	
+	var adjusterDrag = function(event){
+		$adjuster.css({top: event.pageY-dragOffset.top, left: event.pageX-dragOffset.left});
+	}
+	
+	//Adjuster behavior
+	$h1.mousedown(function(event){
+		var adjusterOffset = $adjuster.offset();
+		dragOffset.top = event.pageY-adjusterOffset.top;
+		dragOffset.left = event.pageX-adjusterOffset.left;
+		$(document).on('mousemove', adjusterDrag);
+	}).mouseup(function(){
+		$(document).off('mousemove', adjusterDrag);
+	});
+	
+	//calculating the measure
+	$collection.hover(function(event){
+		if (adjusterActive) return;
+		
+		//show the toolip
+		$tooltip.show();
+		$(this).on('mousemove', tooltipFollow);
+		
+		var measures = getMeasures.apply(this);
 		
 		//populating the tooltip
 		var sum = 0;
