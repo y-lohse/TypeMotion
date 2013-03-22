@@ -61,10 +61,10 @@ $(function(){
 	var $liBase = $('<li>').css({'margin-bottom': '3px'});
 	
 	var $measureList = $('<ul>').css(listStyles);
-	$measureList.append($liBase.clone().html('Average : <span></span>'));
-	$measureList.append($liBase.clone().html('Minimum : <span></span>'));
-	$measureList.append($liBase.clone().html('Maximum : <span></span>'));
-	$measureList.append($liBase.clone().html('Total signs : <span></span>'));
+	$measureList.append($liBase.clone().html('Average : <span class="tm-average"></span>'));
+	$measureList.append($liBase.clone().html('Minimum : <span class="tm-min"></span>'));
+	$measureList.append($liBase.clone().html('Maximum : <span class="tm-max"></span>'));
+	$measureList.append($liBase.clone().html('Total signs : <span class="tm-signs"></span>'));
 	$adjuster.append($measureList);
 	
 	var $rythmList = $('<ul>').css(listStyles);
@@ -141,6 +141,7 @@ $(function(){
 		return {
 			measures: measures,
 			lines: measures.length,
+			average: (sum/measures.length).toPrecision(4),
 			min: min,
 			max: max,
 			sum: sum
@@ -177,7 +178,7 @@ $(function(){
 		var measures = getMeasures.apply(this);
 		
 		//populating the tooltip
-		var text = 'average: '+(measures.sum/measures.lines).toPrecision(4)+
+		var text = 'average: '+measures.average+
 					'<br />'+
 					'min: '+measures.min+
 					' — '+
@@ -188,6 +189,7 @@ $(function(){
 		$(this).off('mousemove', tooltipFollow);
 	});
 	
+	//firing up the adjutment tool
 	$collection.click(function(event){
 		if (adjusterElement != this){
 			if (adjusterElement === null){
@@ -201,6 +203,12 @@ $(function(){
 			adjusterElement = this;
 			$tooltip.hide();
 			$(this).off('mousemove', tooltipFollow);
+			
+			//populationg informations
+			var measures = getMeasures.apply(this);
+			$adjuster.find('span.tm-average').html(measures.average);
+			$adjuster.find('span.tm-min').html(measures.min);
+			$adjuster.find('span.tm-max').html(measures.max);
 		}
 	});
 	
