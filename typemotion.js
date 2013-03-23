@@ -201,11 +201,9 @@ $(function(){
 		if (adjusterElement != this){
 			var $this = $(this);
 			
-			if (adjusterElement === null){
-				//if the adjuster was active for another element, don't move it
-				$adjuster.show();
-				$adjuster.css({top: $this.offset().top, left: $this.offset().left+$this.width()});
-			}
+			//move adjuster next to the focused element
+			$adjuster.show();
+			$adjuster.css({top: $this.offset().top, left: $this.offset().left+$this.width()});
 			
 			//activating adjuster and hiding tooltip
 			adjusterActive = true;
