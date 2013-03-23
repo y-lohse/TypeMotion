@@ -156,7 +156,7 @@ $(function(){
 			max: max,
 			sum: sum
 		};
-	}
+	}; 
 	
 	//event handlers that need to be unregistered at some point
 	var tooltipFollow = function(event){
@@ -177,7 +177,7 @@ $(function(){
 		$(document).off('mousemove', adjusterDrag);
 	});
 	
-	//calculating the measure
+	//tooltip handling
 	$collection.hover(function(event){
 		if (adjusterActive) return;
 		
@@ -214,15 +214,7 @@ $(function(){
 			$tooltip.hide();
 			$(this).off('mousemove', tooltipFollow);
 			
-			//populationg informations
-			var measures = getMeasures.apply(this);
-			$adjuster.find('span.tm-average').html(measures.average);
-			$adjuster.find('span.tm-min').html(measures.min);
-			$adjuster.find('span.tm-max').html(measures.max);
-			
-			$inputs.each(function(){
-				this.value = parseInt($this.css(this.getAttribute('data-prop')));
-			});
+			populateAdjuster(this);
 		}
 	});
 	
@@ -230,6 +222,8 @@ $(function(){
 	$inputs.on('input', function(){
 		var prop = this.getAttribute('data-prop');
 		$(adjusterElement).css(prop, parseInt(this.value)+'px');
+		
+		populateAdjuster(adjusterElement);
 	});
 	
 	//closing adjuster
@@ -238,6 +232,18 @@ $(function(){
 		adjusterActive = false;
 		$adjuster.hide();
 	});
+	
+	//populating adjuster with informations
+	var populateAdjuster = function(element){
+		var measures = getMeasures.apply(element);
+		$adjuster.find('span.tm-average').html(measures.average);
+		$adjuster.find('span.tm-min').html(measures.min);
+		$adjuster.find('span.tm-max').html(measures.max);
+		
+		$inputs.each(function(){
+			this.value = parseInt($(element).css(this.getAttribute('data-prop')));
+		});
+	};
 	
 	//shutting down
 	var cleanup = function(){
