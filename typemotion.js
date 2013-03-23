@@ -19,7 +19,13 @@ $(function(){
 		'font-weight': 'normal',
 		'font-size': '26px',
 		'margin': '0 0 10px',
-		'cursor': 'move'
+		'cursor': 'move',
+		'display': 'inline-block'
+	};
+	var closerStyles = {
+		'display': 'inline-block',
+		'margin-left': '35px',
+		'cursor': 'pointer'	
 	};
 	var h2Styles = {
 		'font-size': '18px',
@@ -54,9 +60,10 @@ $(function(){
 	var $adjuster = $('<div>');
 	$adjuster.css(commonStyles);
 	var $h1 = $('<h1>').html('TypeMotion').css(h1Styles);
+	var $closer = $('<div>').html('[close]').css(closerStyles);
 	var $measureTitle = $('<h2>').html('Measure').css($.extend({}, h2Styles, {'margin-top': 0}));
 	var $rythmTitle = $('<h2>').html('Vertical Rythm').css(h2Styles);
-	$adjuster.append($h1).append($measureTitle);
+	$adjuster.append($h1).append($closer).append($measureTitle);
 	
 	var $liBase = $('<li>').css({'margin-bottom': '3px'});
 	
