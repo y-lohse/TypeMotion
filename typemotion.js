@@ -224,6 +224,13 @@ $(function(){
 		}
 	});
 	
+	//closing adjuster
+	$closer.click(function(){
+		adjusterElement = null;
+		adjusterActive = false;
+		$adjuster.hide();
+	});
+	
 	//shutting down
 	var cleanup = function(){
 		//removing all created spans
