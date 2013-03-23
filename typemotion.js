@@ -192,10 +192,12 @@ $(function(){
 	//firing up the adjutment tool
 	$collection.click(function(event){
 		if (adjusterElement != this){
+			var $this = $(this);
+			
 			if (adjusterElement === null){
 				//if the adjuster was active for another element, don't move it
 				$adjuster.show();
-				$adjuster.css({top: event.pageY+5, left: event.pageX+5});
+				$adjuster.css({top: $this.offset().top, left: $this.offset().left+$this.width()});
 			}
 			
 			//activating adjuster and hiding tooltip
