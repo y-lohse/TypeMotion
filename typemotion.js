@@ -75,8 +75,8 @@ $(function(){
 	$adjuster.append($measureList);
 	
 	var $rythmList = $('<ul>').css(listStyles);
-	$rythmList.append($liBase.clone().html('Font size : <input id="tm-fontsize"data-prop="font-size" type="number" />px'));
-	$rythmList.append($liBase.clone().html('Line height : <input id="tm-lineheight" type="number" />px'));
+	$rythmList.append($liBase.clone().html('Font size : <input id="tm-fontsize" data-prop="font-size" type="number" />px'));
+	$rythmList.append($liBase.clone().html('Line height : <input id="tm-lineheight" data-prop="line-height" type="number" />px'));
 	$adjuster.append($rythmTitle);
 	$adjuster.append($rythmList);
 	
@@ -87,7 +87,10 @@ $(function(){
 	$exitButton.html('Exit TypeMotion');
 	
 	$('body').append($tooltip).append($exitButton).append($adjuster);
-	$('#tm-fontsize, #tm-lineheight').css(inputStyles);
+	
+	//live editinginputs
+	var $inputs = $('#tm-fontsize, #tm-lineheight');
+	$inputs.css(inputStyles);
 	
 	//wrapping every word inside paragraphs inside spans
 	$collection.each(function(){
@@ -217,20 +220,16 @@ $(function(){
 			$adjuster.find('span.tm-min').html(measures.min);
 			$adjuster.find('span.tm-max').html(measures.max);
 			
-			$('#tm-fontsize').val(parseInt($(this).css('font-size')));
-			$('#tm-lineheight').val(parseInt($(this).css('line-height')));
+			$inputs.each(function(){
+				this.value = parseInt($this.css(this.getAttribute('data-prop')));
+			});
 		}
 	});
 	
 	//changes to properties
-	$('#tm-fontsize').on('input', function(){
+	$inputs.on('input', function(){
 		var prop = this.getAttribute('data-prop');
-		$(adjusterElement).css(prop, parseInt(this.value));
-		
-		var measures = getMeasures.apply(adjusterElement);
-		$adjuster.find('span.tm-average').html(measures.average);
-		$adjuster.find('span.tm-min').html(measures.min);
-		$adjuster.find('span.tm-max').html(measures.max);
+		$(adjusterElement).css(prop, parseInt(this.value)+'px');
 	});
 	
 	//closing adjuster
