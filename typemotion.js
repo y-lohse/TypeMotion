@@ -209,6 +209,9 @@ $(function(){
 			$adjuster.find('span.tm-average').html(measures.average);
 			$adjuster.find('span.tm-min').html(measures.min);
 			$adjuster.find('span.tm-max').html(measures.max);
+			
+			$('#tm-fontsize').val(parseInt($(this).css('font-size')));
+			$('#tm-lineheight').val(parseInt($(this).css('line-height')));
 		}
 	});
 	
