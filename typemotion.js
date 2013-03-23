@@ -75,7 +75,7 @@ $(function(){
 	$adjuster.append($measureList);
 	
 	var $rythmList = $('<ul>').css(listStyles);
-	$rythmList.append($liBase.clone().html('Font size : <input id="tm-fontsize" type="number" />px'));
+	$rythmList.append($liBase.clone().html('Font size : <input id="tm-fontsize"data-prop="font-size" type="number" />px'));
 	$rythmList.append($liBase.clone().html('Line height : <input id="tm-lineheight" type="number" />px'));
 	$adjuster.append($rythmTitle);
 	$adjuster.append($rythmList);
@@ -220,6 +220,17 @@ $(function(){
 			$('#tm-fontsize').val(parseInt($(this).css('font-size')));
 			$('#tm-lineheight').val(parseInt($(this).css('line-height')));
 		}
+	});
+	
+	//changes to properties
+	$('#tm-fontsize').on('input', function(){
+		var prop = this.getAttribute('data-prop');
+		$(adjusterElement).css(prop, parseInt(this.value));
+		
+		var measures = getMeasures.apply(adjusterElement);
+		$adjuster.find('span.tm-average').html(measures.average);
+		$adjuster.find('span.tm-min').html(measures.min);
+		$adjuster.find('span.tm-max').html(measures.max);
 	});
 	
 	//closing adjuster
