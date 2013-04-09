@@ -229,6 +229,12 @@ $(function(){
 		$(adjusterElement).css(prop, parseInt(this.value)+'px');
 		
 		populateAdjuster(adjusterElement);
+	}).on('keydown', function(event){
+		if (event.which === 40) this.value = parseInt(this.value)-1;
+		else if (event.which === 38) this.value = parseInt(this.value)+1;
+		
+		var prop = this.getAttribute('data-prop');
+		$(adjusterElement).css(prop, parseInt(this.value)+'px');
 	});
 	
 	//closing adjuster
