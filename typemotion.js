@@ -99,10 +99,12 @@ $(function(){
 	
 	//core function for measure calculation
 	var getMeasures = function(){
+		var $this = $(this);
+		
 		//this keyword refers to the html element
 		//finding out where the lines break
-		var text = escape($(this).text()),
-			$spans = $(this).find('span'),
+		var text = escape($this.text()),
+			$spans = $this.find('span'),
 			prevOffset = $spans.first().offset().top,
 			lineBreaks = [];
 		
@@ -253,11 +255,12 @@ $(function(){
 		});
 		
 		//cleaning event listeners
-		$collection.unbind('mouseenter mouseleave');
+		$collection.unbind('mouseenter mouseleave click');
 		$(document).unbind('keyup');
 		
 		//deleting UI
 		$tooltip.remove();
+		$adjuster.remove();
 		$exitButton.remove();
 	};
 	
