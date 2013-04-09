@@ -140,8 +140,10 @@ $(function(){
 		
 		//computing measures
 		var measures = [];
+		var totalSigns = 0;
 		for (var i = 0, l = lines.length; i < l; i++){
 			measures.push(lines[i].length);
+			totalSigns += lines[i].length;
 		}
 		
 		//computing the actual usefull informations
@@ -156,7 +158,8 @@ $(function(){
 			average: (sum/measures.length).toPrecision(4),
 			min: min,
 			max: max,
-			sum: sum
+			sum: sum,
+			signs: totalSigns
 		};
 	}; 
 	
@@ -241,6 +244,7 @@ $(function(){
 		$adjuster.find('span.tm-average').html(measures.average);
 		$adjuster.find('span.tm-min').html(measures.min);
 		$adjuster.find('span.tm-max').html(measures.max);
+		$adjuster.find('span.tm-signs').html(measures.signs);
 		
 		$inputs.each(function(){
 			this.value = parseInt($(element).css(this.getAttribute('data-prop')));
