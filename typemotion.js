@@ -24,11 +24,6 @@ $(function(){
 		'cursor': 'move',
 		'display': 'inline-block'
 	};
-	var closerStyles = {
-		'display': 'inline-block',
-		'margin-left': '35px',
-		'cursor': 'pointer'	
-	};
 	var h2Styles = {
 		'font-size': '18px',
 		'font-weight': 'normal',
@@ -63,10 +58,9 @@ $(function(){
 	var $adjuster = $('<div>');
 	$adjuster.css(commonStyles);
 	var $h1 = $('<h1>').html('TypeMotion').css(h1Styles);
-	var $closer = $('<div>').html('[close]').css(closerStyles);
 	var $measureTitle = $('<h2>').html('Measure').css($.extend({}, h2Styles, {'margin-top': 0}));
 	var $rythmTitle = $('<h2>').html('Vertical Rythm').css(h2Styles);
-	$adjuster.append($h1).append($closer).append($measureTitle);
+	$adjuster.append($h1).append($measureTitle);
 	
 	var $liBase = $('<li>').css({'margin-bottom': '3px'});
 	
@@ -223,6 +217,8 @@ $(function(){
 			$(this).off('mousemove', tooltipFollow);
 			
 			populateAdjuster(this);
+			
+			event.stopPropagation();
 		}
 	});
 	
@@ -250,13 +246,6 @@ $(function(){
 			$(adjusterElement).css(prop, num.toString()+unit);
 			this.value = num.toString()+unit;
 		}
-	});
-	
-	//closing adjuster
-	$closer.click(function(){
-		adjusterElement = null;
-		adjusterActive = false;
-		$adjuster.hide();
 	});
 	
 	function getMatchedStyle(elem, property){
@@ -320,7 +309,15 @@ $(function(){
 	};
 	
 	$exitButton.click(cleanup);
-	$(document).keyup(function(event){
+	$(document)
+	.keyup(function(event){
 		if (event.which == 27) cleanup();
+	})
+	.on('click', function(event){
+		if (adjusterActive && (!$collection.has(event.target).length && !$collection.is(event.target)) && (!$adjuster.has(event.target).length && !$adjuster.is(event.target))){
+			adjusterElement = null;
+			adjusterActive = false;
+			$adjuster.hide();
+		}
 	});
 });
