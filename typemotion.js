@@ -1,6 +1,4 @@
 $(function(){
-	'use strict';
-	
 	//setup
 	var $collection = $('p'),
 		adjusterActive = false,
@@ -193,6 +191,18 @@ $(function(){
 		return val || $(elem).css(property);
 	};
 	
+	//populating adjuster with informations
+	var populateAdjuster = function(element){
+		var measures = getMeasures.apply(element);
+		$adjuster.find('span.tm-average').html(measures.average);
+		$adjuster.find('span.tm-min').html(measures.min);
+		$adjuster.find('span.tm-max').html(measures.max);
+		$adjuster.find('span.tm-signs').html(measures.signs);
+		
+		$('#tm-fontsize').val(getMatchedStyle(element, 'font-size'));
+		$('#tm-lineheight').val(getMatchedStyle(element, 'line-height'));
+	};
+	
 	//event handlers that need to be unregistered at some point
 	var tooltipFollow = function(event){
 		$tooltip.css({top: event.pageY+5, left: event.pageX+5});
@@ -202,18 +212,8 @@ $(function(){
 		$adjuster.css({top: event.pageY-dragOffset.top, left: event.pageX-dragOffset.left});
 	}
 	
-	//Adjuster behavior
-	$h1.mousedown(function(event){
-		var adjusterOffset = $adjuster.offset();
-		dragOffset.top = event.pageY-adjusterOffset.top;
-		dragOffset.left = event.pageX-adjusterOffset.left;
-		$(document).on('mousemove', adjusterDrag);
-	}).mouseup(function(){
-		$(document).off('mousemove', adjusterDrag);
-	});
-	
 	//tooltip handling
-	$collection.hover(function(event){
+	var collectionOver = function(event){
 		if (adjusterActive) return;
 		
 		//show the toolip
@@ -229,13 +229,15 @@ $(function(){
 					' — '+
 					'max: '+measures.max;
 		$tooltip.html(text);
-	}, function(){
+	};
+	
+	var collectionOut = function(event){
 		$tooltip.hide();
 		$(this).off('mousemove', tooltipFollow);
-	});
+	};
 	
 	//firing up the adjutment tool
-	$collection.click(function(event){
+	var collectionClick = function(event){
 		if (adjusterElement != this){
 			var $this = $(this);
 			
@@ -253,10 +255,20 @@ $(function(){
 			
 			event.stopPropagation();
 		}
+	};
+	
+	//Adjuster behavior
+	$h1.mousedown(function(event){
+		var adjusterOffset = $adjuster.offset();
+		dragOffset.top = event.pageY-adjusterOffset.top;
+		dragOffset.left = event.pageX-adjusterOffset.left;
+		$(document).on('mousemove', adjusterDrag);
+	}).mouseup(function(){
+		$(document).off('mousemove', adjusterDrag);
 	});
 	
 	//changes to properties
-	$inputs.on('input', function(){
+	$inputs.on('blur', function(){
 		var match = this.value.match(/(\d(\.)?)+/g);
 		if (match && this.value.substring(0, match[0].length).match(/\.$/)) return;
 		
@@ -281,17 +293,25 @@ $(function(){
 		}
 	});
 	
-	//populating adjuster with informations
-	var populateAdjuster = function(element){
-		var measures = getMeasures.apply(element);
-		$adjuster.find('span.tm-average').html(measures.average);
-		$adjuster.find('span.tm-min').html(measures.min);
-		$adjuster.find('span.tm-max').html(measures.max);
-		$adjuster.find('span.tm-signs').html(measures.signs);
-		
-		$('#tm-fontsize').val(getMatchedStyle(element, 'font-size'));
-		$('#tm-lineheight').val(getMatchedStyle(element, 'line-height'));
+	//document events
+	var docEscape = function(event){
+		if (event.which == 27) cleanup();
 	};
+	
+	var docClick = function(event){
+		if (adjusterActive && (!$collection.has(event.target).length && !$collection.is(event.target)) && (!$adjuster.has(event.target).length && !$adjuster.is(event.target))){
+			adjusterElement = null;
+			adjusterActive = false;
+			$adjuster.hide();
+		}
+	};
+	
+	$collection.hover(collectionOver, collectionOut);
+	$collection.click(collectionClick);
+	
+	$(document).on('keyup', docEscape).on('click', docClick);
+	
+	$exitButton.click(cleanup);
 	
 	//shutting down
 	var cleanup = function(){
@@ -301,27 +321,14 @@ $(function(){
 		});
 		
 		//cleaning event listeners
-		$collection.unbind('mouseenter mouseleave click');
-		$(document).unbind('keyup');
+		$collection.off('mouseenter', collectionOver).off('mouseleave', collectionOut).off('click', collectionClick);
+		$(document).off('keyup', docEscape).off('click', docClick);
 		
 		//deleting UI
 		$tooltip.remove();
 		$adjuster.remove();
 		$exitButton.remove();
 	};
-	
-	$exitButton.click(cleanup);
-	$(document)
-	.keyup(function(event){
-		if (event.which == 27) cleanup();
-	})
-	.on('click', function(event){
-		if (adjusterActive && (!$collection.has(event.target).length && !$collection.is(event.target)) && (!$adjuster.has(event.target).length && !$adjuster.is(event.target))){
-			adjusterElement = null;
-			adjusterActive = false;
-			$adjuster.hide();
-		}
-	});
 	
 	// polyfill window.getMatchedCSSRules() in FireFox 6+
 	if ( typeof window.getMatchedCSSRules !== 'function' ) {
