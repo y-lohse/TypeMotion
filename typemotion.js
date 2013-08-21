@@ -1,4 +1,6 @@
 $(function(){
+	'use strict';
+	
 	//setup
 	var $collection = $('p'),
 		adjusterActive = false,
@@ -30,7 +32,6 @@ $(function(){
 	var h2Styles = {
 		'font-size': '18px',
 		'font-weight': 'normal',
-		'text-transform': 'uppercase',
 		'padding': 0,
 		'margin-top': '25px',
 		'margin-bottom': '5px'
@@ -38,16 +39,18 @@ $(function(){
 	var listStyles = {
 		'padding': 0,
 		'margin': 0,
-		'list-style': 'none'
+		'list-style': 'none',
+		'font-size': '15px'
 	};
 	var inputStyles = {
 		'width': '70px',
 		'text-align': 'right',
 		'margin-left': '20px',
 		'margin-right': '5px',
-		'padding': '2px 4px',
-		'background': 'rgba(255,255,255,.8)',
-		'border': '1px solid #ddd',
+		'padding': '6px 4px',
+		'color': '#fff',
+		'background': 'rgba(0,0,0,.8)',
+		'border': '1px solid #222',
 		'border-radius': '4px'
 	};
 	
@@ -75,8 +78,8 @@ $(function(){
 	$adjuster.append($measureList);
 	
 	var $rythmList = $('<ul>').css(listStyles);
-	$rythmList.append($liBase.clone().html('Font size : <input id="tm-fontsize" data-prop="font-size" type="text" />'));
-	$rythmList.append($liBase.clone().html('Line height : <input id="tm-lineheight" data-prop="line-height" type="text" />'));
+	$rythmList.append($liBase.clone().html('<label for="tm-fontsize">Font size :</label><input id="tm-fontsize" data-prop="font-size" type="text" />'));
+	$rythmList.append($liBase.clone().html('<label for="tm-lineheight">Line height :</label><input id="tm-lineheight" data-prop="line-height" type="text" />'));
 	$adjuster.append($rythmTitle);
 	$adjuster.append($rythmList);
 	
