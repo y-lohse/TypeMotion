@@ -75,8 +75,8 @@ $(function(){
 	$adjuster.append($measureList);
 	
 	var $rythmList = $('<ul>').css(listStyles);
-	$rythmList.append($liBase.clone().html('Font size : <input id="tm-fontsize" data-prop="font-size" type="number" />px'));
-	$rythmList.append($liBase.clone().html('Line height : <input id="tm-lineheight" data-prop="line-height" type="number" />px'));
+	$rythmList.append($liBase.clone().html('Font size : <input id="tm-fontsize" data-prop="font-size" type="text" />'));
+	$rythmList.append($liBase.clone().html('Line height : <input id="tm-lineheight" data-prop="line-height" type="text" />'));
 	$adjuster.append($rythmTitle);
 	$adjuster.append($rythmList);
 	
@@ -225,16 +225,28 @@ $(function(){
 	
 	//changes to properties
 	$inputs.on('input', function(){
-		var prop = this.getAttribute('data-prop');
-		$(adjusterElement).css(prop, parseInt(this.value)+'px');
+		var match = this.value.match(/(\d(\.)?)+/g);
+		if (match && this.value.substring(0, match[0].length).match(/\.$/)) return;
 		
+		$(adjusterElement).css(this.getAttribute('data-prop'), this.value);
 		populateAdjuster(adjusterElement);
 	}).on('keydown', function(event){
-		if (event.which === 40) this.value = parseInt(this.value)-1;
-		else if (event.which === 38) this.value = parseInt(this.value)+1;
-		
-		var prop = this.getAttribute('data-prop');
-		$(adjusterElement).css(prop, parseInt(this.value)+'px');
+		if ((event.which === 40 || event.which === 38) && this.value.match(/\d+/g)){
+			var match = this.value.match(/(\d(\.)?)+/g)[0],
+				num = this.value.substring(0, match.length),
+				unit = this.value.substring(match.length),
+				precision = num.indexOf('.'),
+				isFloat = (precision >= 0),
+				dif = (isFloat) ? .1 : 1;
+			num = (isFloat) ? parseFloat(num) : parseInt(num);
+			
+			num = (event.which === 40) ? num-dif : num+dif;
+			if (isFloat) num = num.toPrecision(match.length-precision);//adjust for computed rounding errors
+			
+			var prop = this.getAttribute('data-prop');
+			$(adjusterElement).css(prop, num.toString()+unit);
+			this.value = num.toString()+unit;
+		}
 	});
 	
 	//closing adjuster
@@ -244,6 +256,37 @@ $(function(){
 		$adjuster.hide();
 	});
 	
+	function getMatchedStyle(elem, property){
+		// element property has highest priority
+		var val = elem.style.getPropertyValue(property);
+	
+		// if it's important, we are done
+		if(elem.style.getPropertyPriority(property))
+			return val;
+	
+		// get matched rules
+		var rules = getMatchedCSSRules(elem);
+	
+		// iterate the rules backwards
+		// rules are ordered by priority, highest last
+		for(var i = rules.length; i --> 0;){
+			var r = rules[i];
+	
+			var important = r.style.getPropertyPriority(property);
+	
+			// if set, only reset if important
+			if(val == null || important){
+				val = r.style.getPropertyValue(property);
+	
+				// done if important
+				if(important)
+					break;
+			}
+		}
+	
+		return val || $(elem).css(property);
+	}
+	
 	//populating adjuster with informations
 	var populateAdjuster = function(element){
 		var measures = getMeasures.apply(element);
@@ -252,9 +295,8 @@ $(function(){
 		$adjuster.find('span.tm-max').html(measures.max);
 		$adjuster.find('span.tm-signs').html(measures.signs);
 		
-		$inputs.each(function(){
-			this.value = parseInt($(element).css(this.getAttribute('data-prop')));
-		});
+		$('#tm-fontsize').val(getMatchedStyle(element, 'font-size'));
+		$('#tm-lineheight').val(getMatchedStyle(element, 'line-height'));
 	};
 	
 	//shutting down
