@@ -65,10 +65,10 @@ $(function(){
 	var $liBase = $('<li>').css({'margin-bottom': '3px'});
 	
 	var $measureList = $('<ul>').css(listStyles);
-	$measureList.append($liBase.clone().html('Average : <span class="tm-average"></span>'));
-	$measureList.append($liBase.clone().html('Minimum : <span class="tm-min"></span>'));
-	$measureList.append($liBase.clone().html('Maximum : <span class="tm-max"></span>'));
-	$measureList.append($liBase.clone().html('Total signs : <span class="tm-signs"></span>'));
+	$measureList.append($liBase.clone().html('<label>Average :</label> <span class="tm-average"></span>'));
+	$measureList.append($liBase.clone().html('<label>Minimum :</label> <span class="tm-min"></span>'));
+	$measureList.append($liBase.clone().html('<label>Maximum :</label> <span class="tm-max"></span>'));
+	$measureList.append($liBase.clone().html('<label>Total signs :</label> <span class="tm-signs"></span>'));
 	$adjuster.append($measureList);
 	
 	var $rythmList = $('<ul>').css(listStyles);
@@ -76,6 +76,8 @@ $(function(){
 	$rythmList.append($liBase.clone().html('<label for="tm-lineheight">Line height :</label><input id="tm-lineheight" data-prop="line-height" type="text" />'));
 	$adjuster.append($rythmTitle);
 	$adjuster.append($rythmList);
+	
+	$adjuster.find('label').css({'min-width': '100px', 'display': 'inline-block'});
 	
 	$adjuster.hide();
 	
@@ -158,7 +160,38 @@ $(function(){
 			sum: sum,
 			signs: totalSigns
 		};
-	}; 
+	};
+	
+	var getMatchedStyle = function(elem, property){
+		// element property has highest priority
+		var val = elem.style.getPropertyValue(property);
+	
+		// if it's important, we are done
+		if(elem.style.getPropertyPriority(property))
+			return val;
+	
+		// get matched rules
+		var rules = getMatchedCSSRules(elem);
+	
+		// iterate the rules backwards
+		// rules are ordered by priority, highest last
+		for(var i = rules.length; i --> 0;){
+			var r = rules[i];
+	
+			var important = r.style.getPropertyPriority(property);
+	
+			// if set, only reset if important
+			if(val == null || important){
+				val = r.style.getPropertyValue(property);
+	
+				// done if important
+				if(important)
+					break;
+			}
+		}
+	
+		return val || $(elem).css(property);
+	};
 	
 	//event handlers that need to be unregistered at some point
 	var tooltipFollow = function(event){
@@ -244,40 +277,9 @@ $(function(){
 			
 			var prop = this.getAttribute('data-prop');
 			$(adjusterElement).css(prop, num.toString()+unit);
-			this.value = num.toString()+unit;
+			populateAdjuster(adjusterElement);
 		}
 	});
-	
-	function getMatchedStyle(elem, property){
-		// element property has highest priority
-		var val = elem.style.getPropertyValue(property);
-	
-		// if it's important, we are done
-		if(elem.style.getPropertyPriority(property))
-			return val;
-	
-		// get matched rules
-		var rules = getMatchedCSSRules(elem);
-	
-		// iterate the rules backwards
-		// rules are ordered by priority, highest last
-		for(var i = rules.length; i --> 0;){
-			var r = rules[i];
-	
-			var important = r.style.getPropertyPriority(property);
-	
-			// if set, only reset if important
-			if(val == null || important){
-				val = r.style.getPropertyValue(property);
-	
-				// done if important
-				if(important)
-					break;
-			}
-		}
-	
-		return val || $(elem).css(property);
-	}
 	
 	//populating adjuster with informations
 	var populateAdjuster = function(element){
@@ -320,4 +322,137 @@ $(function(){
 			$adjuster.hide();
 		}
 	});
+	
+	// polyfill window.getMatchedCSSRules() in FireFox 6+
+	if ( typeof window.getMatchedCSSRules !== 'function' ) {
+		var ELEMENT_RE = /[\w-]+/g,
+				ID_RE = /#[\w-]+/g,
+				CLASS_RE = /\.[\w-]+/g,
+				ATTR_RE = /\[[^\]]+\]/g,
+				// :not() pseudo-class does not add to specificity, but its content does as if it was outside it
+				PSEUDO_CLASSES_RE = /\:(?!not)[\w-]+(\(.*\))?/g,
+				PSEUDO_ELEMENTS_RE = /\:\:?(after|before|first-letter|first-line|selection)/g;
+		// convert an array-like object to array
+		function toArray (list) {
+			return [].slice.call(list);
+		}
+
+		// handles extraction of `cssRules` as an `Array` from a stylesheet or something that behaves the same
+		function getSheetRules (stylesheet) {
+			var sheet_media = stylesheet.media && stylesheet.media.mediaText;
+			// if this sheet is disabled skip it
+			if ( stylesheet.disabled ) return [];
+			// if this sheet's media is specified and doesn't match the viewport then skip it
+			if ( sheet_media && sheet_media.length && ! window.matchMedia(sheet_media).matches ) return [];
+			// get the style rules of this sheet
+			return toArray(stylesheet.cssRules);
+		}
+
+		function _find (string, re) {
+			var matches = string.match(re);
+			return re ? re.length : 0;
+		}
+
+		// calculates the specificity of a given `selector`
+		function calculateScore (selector) {
+			var score = [0,0,0],
+				parts = selector.split(' '),
+				part, match;
+			//TODO: clean the ':not' part since the last ELEMENT_RE will pick it up
+			while ( part = parts.shift(), typeof part == 'string' ) {
+				// find all pseudo-elements
+				match = _find(part, PSEUDO_ELEMENTS_RE);
+				score[2] = match;
+				// and remove them
+				match && (part = part.replace(PSEUDO_ELEMENTS_RE, ''));
+				// find all pseudo-classes
+				match = _find(part, PSEUDO_CLASSES_RE);
+				score[1] = match;
+				// and remove them
+				match && (part = part.replace(PSEUDO_CLASSES_RE, ''));
+				// find all attributes
+				match = _find(part, ATTR_RE);
+				score[1] += match;
+				// and remove them
+				match && (part = part.replace(ATTR_RE, ''));
+				// find all IDs
+				match = _find(part, ID_RE);
+				score[0] = match;
+				// and remove them
+				match && (part = part.replace(ID_RE, ''));
+				// find all classes
+				match = _find(part, CLASS_RE);
+				score[1] += match;
+				// and remove them
+				match && (part = part.replace(CLASS_RE, ''));
+				// find all elements
+				score[2] += _find(part, ELEMENT_RE);
+			}
+			return parseInt(score.join(''), 10);
+		}
+
+		// returns the heights possible specificity score an element can get from a give rule's selectorText
+		function getSpecificityScore (element, selector_text) {
+			var selectors = selector_text.split(','),
+				selector, score, result = 0;
+			while ( selector = selectors.shift() ) {
+				if ( element.mozMatchesSelector(selector) ) {
+					score = calculateScore(selector);
+					result = score > result ? score : result;
+				}
+			}
+			return result;
+		}
+
+		function sortBySpecificity (element, rules) {
+			// comparing function that sorts CSSStyleRules according to specificity of their `selectorText`
+			function compareSpecificity (a, b) {
+				return getSpecificityScore(element, b.selectorText) - getSpecificityScore(element, a.selectorText);
+			}
+
+			return rules.sort(compareSpecificity);
+		}
+
+		//TODO: not supporting 2nd argument for selecting pseudo elements
+		//TODO: not supporting 3rd argument for checking author style sheets only
+		window.getMatchedCSSRules = function (element /*, pseudo, author_only*/) {
+			var style_sheets, sheet, sheet_media,
+				rules, rule,
+				result = [];
+			// get stylesheets and convert to a regular Array
+			style_sheets = toArray(window.document.styleSheets);
+
+			// assuming the browser hands us stylesheets in order of appearance
+			// we iterate them from the beginning to follow proper cascade order
+			while ( sheet = style_sheets.shift() ) {
+				// get the style rules of this sheet
+				rules = getSheetRules(sheet);
+				// loop the rules in order of appearance
+				while ( rule = rules.shift() ) {
+					// if this is an @import rule
+					if ( rule.styleSheet ) {
+						// insert the imported stylesheet's rules at the beginning of this stylesheet's rules
+						rules = getSheetRules(rule.styleSheet).concat(rules);
+						// and skip this rule
+						continue;
+					}
+					// if there's no stylesheet attribute BUT there IS a media attribute it's a media rule
+					else if ( rule.media ) {
+						// insert the contained rules of this media rule to the beginning of this stylesheet's rules
+						rules = getSheetRules(rule).concat(rules);
+						// and skip it
+						continue
+					}
+					//TODO: for now only polyfilling Gecko
+					// check if this element matches this rule's selector
+					if ( element.mozMatchesSelector(rule.selectorText) ) {
+						// push the rule to the results set
+						result.push(rule);
+					}
+				}
+			}
+			// sort according to specificity
+			return sortBySpecificity(element, result);
+		};
+	}
 });
