@@ -7,13 +7,15 @@ $(function(){
 	
 	var commonStyles = {
 		'position': 'absolute',
+		'margin': 0,
+		padding: '10px',
 		'background': '#242424',
 		'border': '2px solid #c7c7c7',
 		'border-radius': '10px',
 		'padding': '10px 15px',
 		'color': '#fff',
 		'font-size': '18px',
-		'font-family': 'tahoma',
+		'font-family': 'tahoma'
 	};
 	var h1Styles = {
 		'font-weight': 'normal',
