@@ -80,7 +80,7 @@ $(function(){
 	$adjuster.hide();
 	
 	var $exitButton = $('<div>');
-	$exitButton.css($.extend({}, commonStyles, {top: 10, right: 10, cursor: 'pointer', 'text-align': 'center'}));
+	$exitButton.css($.extend({}, commonStyles, {'position': 'fixed', top: 10, right: 10, cursor: 'pointer', 'text-align': 'center'}));
 	$exitButton.html('Exit TypeMotion');
 	
 	$('body').append($tooltip).append($exitButton).append($adjuster);
@@ -306,13 +306,6 @@ $(function(){
 		}
 	};
 	
-	$collection.hover(collectionOver, collectionOut);
-	$collection.click(collectionClick);
-	
-	$(document).on('keyup', docEscape).on('click', docClick);
-	
-	$exitButton.click(cleanup);
-	
 	//shutting down
 	var cleanup = function(){
 		//removing all created spans
@@ -329,6 +322,13 @@ $(function(){
 		$adjuster.remove();
 		$exitButton.remove();
 	};
+	
+	$collection.hover(collectionOver, collectionOut);
+	$collection.click(collectionClick);
+	
+	$(document).on('keyup', docEscape).on('click', docClick);
+	
+	$exitButton.on('click', cleanup);
 	
 	// polyfill window.getMatchedCSSRules() in FireFox 6+
 	if ( typeof window.getMatchedCSSRules !== 'function' ) {
