@@ -8,14 +8,15 @@ $(function(){
 	var commonStyles = {
 		'position': 'absolute',
 		'margin': 0,
-		padding: '10px',
+		'padding': '10px',
 		'background': '#242424',
 		'border': '2px solid #c7c7c7',
 		'border-radius': '10px',
 		'padding': '10px 15px',
 		'color': '#fff',
 		'font-size': '18px',
-		'font-family': 'tahoma'
+		'font-family': 'tahoma',
+		'z-index:': 15000
 	};
 	var h1Styles = {
 		'font-weight': 'normal',
@@ -77,7 +78,7 @@ $(function(){
 	$adjuster.append($rythmTitle);
 	$adjuster.append($rythmList);
 	
-	$adjuster.find('label').css({'min-width': '100px', 'display': 'inline-block'});
+	$adjuster.find('label').css({'min-width': '100px', 'display': 'inline-block', 'color': '#fff'});
 	
 	$adjuster.hide();
 	
