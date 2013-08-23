@@ -92,9 +92,26 @@ $(function(){
 	$inputs.css(inputStyles);
 	
 	//wrapping every word inside paragraphs inside spans
-	$collection.each(function(){
-		$(this).html('<span class="tm">'+$(this).html().split(' ').join('</span> <span class="tm">')+'</span>');
-	});
+	$.fn.spanify = function(wrapper){
+		this.each(function(){
+			if (this.nodeType === 3){
+				var $div = $('<div>');
+				
+				$.each(this.data.split(/\s/), function(index, value){
+					if (!value.length) return;
+					
+					//technically this isn't exact, as \s migth catch some other kind of spaces
+					$div.append($(wrapper).clone().text(value+' '));
+				});
+				$(this).after($div.html()).remove();
+			}
+			else{
+				$(this.childNodes).spanify(wrapper);
+			}
+		});
+	}
+	
+	$collection.spanify($('<span>').addClass('tm'));
 	
 	//core function for measure calculation
 	var getMeasures = function(){
@@ -103,13 +120,13 @@ $(function(){
 		//this keyword refers to the html element
 		//finding out where the lines break
 		var text = escape($this.text()),
-			$spans = $this.find('span'),
+			$spans = $this.find('span.tm'),
 			prevOffset = $spans.first().offset().top,
 			lineBreaks = [];
-		
+		//@TODO : measure dif between first and last
 		$spans.each(function(index){
 			var currentOffset = $(this).offset().top;
-			if (currentOffset != prevOffset){
+			if (currentOffset > prevOffset){
 				prevOffset = currentOffset;
 				lineBreaks.push(index);
 			}
