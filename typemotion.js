@@ -10,7 +10,7 @@ $(function(){
 		'margin': 0,
 		'padding': '10px',
 		'background': '#242424',
-		'border': '2px solid rgba(255,255,255,.4)',
+		'border': '1px solid rgba(255,255,255,.3)',
 		'border-radius': '10px',
 		'padding': '10px 15px',
 		'color': '#fff',
@@ -299,7 +299,7 @@ $(function(){
 		populateAdjuster(adjusterElement);
 	}).on('keydown', function(event){
 		if ((event.which === 40 || event.which === 38) && this.value.match(/\d+/g)){
-			var match = this.value.match(/(\d(\.)?)+/g)[0],
+			var match = this.value.match(/(\d+(\.)?)+/g)[0],
 				num = this.value.substring(0, match.length),
 				unit = this.value.substring(match.length),
 				precision = num.indexOf('.'),
@@ -308,7 +308,10 @@ $(function(){
 			num = (isFloat) ? parseFloat(num) : parseInt(num);
 			
 			num = (event.which === 40) ? num-dif : num+dif;
-			if (isFloat) num = num.toPrecision(match.length-precision);//adjust for computed rounding errors
+			if (isFloat){
+				//adjust for computer dumbness
+				num = num.toPrecision(match.length-precision+1).toString().substring(0, match.length);
+			}
 			
 			var prop = this.getAttribute('data-prop');
 			$(adjusterElement).css(prop, num.toString()+unit);
