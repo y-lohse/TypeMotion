@@ -23,6 +23,7 @@ $(function(){
 		'font-size': '26px',
 		'margin': '0 0 10px',
 		'cursor': 'move',
+		'color': '#fff',
 		'display': 'inline-block'
 	};
 	var h2Styles = {
@@ -30,6 +31,7 @@ $(function(){
 		'font-weight': 'normal',
 		'padding': 0,
 		'margin-top': '25px',
+		'color': '#fff',
 		'margin-bottom': '5px'
 	};
 	var listStyles = {
@@ -114,7 +116,8 @@ $(function(){
 		});
 	}
 	
-	$collection.spanify($('<span>').addClass('tm'));
+	var spanClass = 'tm'+(new Date()).getTime();
+	$collection.spanify($('<span>').addClass(spanClass));
 	
 	//core function for measure calculation
 	var getMeasures = function(){
@@ -123,7 +126,7 @@ $(function(){
 		//this keyword refers to the html element
 		//finding out where the lines break
 		var text = escape($this.text()),
-			$spans = $this.find('span.tm'),
+			$spans = $this.find('span.'+spanClass),
 			prevOffset = $spans.first().offset().top,
 			lineBreaks = [];
 		//@TODO : measure dif between first and last
@@ -339,7 +342,7 @@ $(function(){
 	//shutting down
 	var cleanup = function(){
 		//removing all created spans
-		$('span.tm').each(function(){
+		$('span.'+spanClass).each(function(){
 			$(this.childNodes).unwrap();
 		});
 		
