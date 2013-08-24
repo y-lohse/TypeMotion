@@ -10,7 +10,7 @@ $(function(){
 		'margin': 0,
 		'padding': '10px',
 		'background': '#242424',
-		'border': '2px solid #c7c7c7',
+		'border': '2px solid rgba(255,255,255,.4)',
 		'border-radius': '10px',
 		'padding': '10px 15px',
 		'color': '#fff',
