@@ -75,6 +75,8 @@ $(function(){
 	var $rythmList = $('<ul>').css(listStyles);
 	$rythmList.append($liBase.clone().html('<label for="tm-fontsize">Font size :</label><input id="tm-fontsize" data-prop="font-size" type="text" />'));
 	$rythmList.append($liBase.clone().html('<label for="tm-lineheight">Line height :</label><input id="tm-lineheight" data-prop="line-height" type="text" />'));
+	$rythmList.append($liBase.clone().html('<label for="tm-wordspacing">Word spacing :</label><input id="tm-wordspacing" data-prop="word-spacing" type="text" />'));
+	$rythmList.append($liBase.clone().html('<label for="tm-letterspacing">Letter spacing :</label><input id="tm-letterspacing" data-prop="letter-spacing" type="text" />'));
 	$adjuster.append($rythmTitle);
 	$adjuster.append($rythmList);
 	
@@ -89,7 +91,7 @@ $(function(){
 	$('body').append($tooltip).append($exitButton).append($adjuster);
 	
 	//live editinginputs
-	var $inputs = $('#tm-fontsize, #tm-lineheight');
+	var $inputs = $('#tm-fontsize, #tm-lineheight, #tm-wordspacing, #tm-letterspacing');
 	$inputs.css(inputStyles);
 	
 	//wrapping every word inside paragraphs inside spans
@@ -275,6 +277,8 @@ $(function(){
 			populateAdjuster(this);
 			$('#tm-fontsize').val(getMatchedStyle(this, 'font-size'));
 			$('#tm-lineheight').val(getMatchedStyle(this, 'line-height'));
+			$('#tm-wordspacing').val(getMatchedStyle(this, 'word-spacing'));
+			$('#tm-letterspacing').val(getMatchedStyle(this, 'letter-spacing'));
 			
 			event.stopPropagation();
 		}
@@ -298,20 +302,19 @@ $(function(){
 		$(adjusterElement).css(this.getAttribute('data-prop'), this.value);
 		populateAdjuster(adjusterElement);
 	}).on('keydown', function(event){
-		if ((event.which === 40 || event.which === 38) && this.value.match(/\d+/g)){
-			var match = this.value.match(/(\d+(\.)?)+/g)[0],
-				num = this.value.substring(0, match.length),
-				unit = this.value.substring(match.length),
-				precision = num.indexOf('.'),
-				isFloat = (precision >= 0),
-				dif = (isFloat) ? .1 : 1;
-			num = (isFloat) ? parseFloat(num) : parseInt(num);
+		if ((event.which === 40 || event.which === 38) && this.value.match(/-?(\d+)?\.?\d+.?/)){
 			
-			num = (event.which === 40) ? num-dif : num+dif;
-			if (isFloat){
-				//adjust for computer dumbness
-				num = num.toPrecision(match.length-precision+1).toString().substring(0, match.length);
-			}
+			var match = this.value.split(/[^0-9]+$/)[0],
+				precision = match.indexOf('.'),
+				isFloat = (precision >= 0),
+				unit = this.value.substring(match.length),
+				num = (isFloat) ? parseFloat(match) : parseInt(match),
+				step;
+				
+			step = (event.which === 38) ? 1 : -1;
+			if (isFloat) step *= .1;
+			
+			num = (isFloat) ? (num+step).toFixed(match.length-precision-1) : num+step;
 			
 			var prop = this.getAttribute('data-prop');
 			$(adjusterElement).css(prop, num.toString()+unit);
