@@ -51,7 +51,7 @@ body {
   font-size: 15px;
   line-height: 1.5; 
   background: #fafafa url(../images/body-bg.jpg) 0 0 repeat;
-  font-family: 'Helvetica Neue', Helvetica, Arial, serif;
+  font-family: 'Helvetica Neue', Helvetica, 'Roboto', Arial, serif;
   font-weight: 400;
   color: #666;
 }
@@ -245,7 +245,6 @@ form {
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, serif;
   font-weight: 300;
   font-size: 22px;
-  font-weight: bold;
   margin-bottom: 8px;
   color: #474747;
 } 
@@ -260,7 +259,6 @@ form {
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, serif;
   font-weight: 300;
   font-size: 18px;
-  font-weight: bold;
   margin-top: 24px;
   margin-bottom: 8px;
   color: #474747;
@@ -277,7 +275,6 @@ form {
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, serif; 
   font-weight: 300;
   font-size: 15px;
-  font-weight: bold;
   color: #474747;
 } 
 
@@ -315,6 +312,7 @@ h6:before {
 }
 
 p {
+  font-size: 17px;
   margin-bottom: 20px;
 }
  
