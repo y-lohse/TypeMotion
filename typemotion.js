@@ -218,9 +218,6 @@ $(function(){
 		$adjuster.find('span.tm-min').html(measures.min);
 		$adjuster.find('span.tm-max').html(measures.max);
 		$adjuster.find('span.tm-signs').html(measures.signs);
-		
-		$('#tm-fontsize').val(getMatchedStyle(element, 'font-size'));
-		$('#tm-lineheight').val(getMatchedStyle(element, 'line-height'));
 	};
 	
 	//event handlers that need to be unregistered at some point
@@ -272,6 +269,8 @@ $(function(){
 			$(this).off('mousemove', tooltipFollow);
 			
 			populateAdjuster(this);
+			$('#tm-fontsize').val(getMatchedStyle(this, 'font-size'));
+			$('#tm-lineheight').val(getMatchedStyle(this, 'line-height'));
 			
 			event.stopPropagation();
 		}
@@ -288,7 +287,7 @@ $(function(){
 	});
 	
 	//changes to properties
-	$inputs.on('blur', function(){
+	$inputs.on('input', function(){
 		var match = this.value.match(/(\d(\.)?)+/g);
 		if (match && this.value.substring(0, match[0].length).match(/\.$/)) return;
 		
@@ -305,10 +304,13 @@ $(function(){
 			num = (isFloat) ? parseFloat(num) : parseInt(num);
 			
 			num = (event.which === 40) ? num-dif : num+dif;
+			console.log(match.length-precision);
+			console.log(num);
 			if (isFloat) num = num.toPrecision(match.length-precision);//adjust for computed rounding errors
 			
 			var prop = this.getAttribute('data-prop');
 			$(adjusterElement).css(prop, num.toString()+unit);
+			$(this).val(num.toString()+unit);
 			populateAdjuster(adjusterElement);
 		}
 	});
