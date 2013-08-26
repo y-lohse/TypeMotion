@@ -6,33 +6,32 @@
 			adjusterElement = null,
 			dragOffset = {top: 0, left: 0};
 		
-		var commonStyles = {
-			'position': 'absolute',
-			'margin': 0,
-			'padding': '10px',
-			'background': '#242424',
-			'border': '1px solid rgba(255,255,255,.3)',
-			'border-radius': '10px',
-			'padding': '10px 15px',
+		var textStyles = {
 			'color': '#fff',
 			'font-size': '18px',
 			'font-family': 'tahoma',
+			'font-weight': 'normal'
+		};
+		
+		var blockStyles = {
+			'position': 'absolute',
+			'margin': 0,
+			'padding': '10px 15px',
+			'background': '#242424',
+			'border': '1px solid rgba(255,255,255,.3)',
+			'border-radius': '10px',
 			'z-index:': 15000
 		};
 		var h1Styles = {
-			'font-weight': 'normal',
 			'font-size': '26px',
 			'margin': '0 0 10px',
 			'cursor': 'move',
-			'color': '#fff',
 			'display': 'inline-block'
 		};
 		var h2Styles = {
 			'font-size': '18px',
-			'font-weight': 'normal',
 			'padding': 0,
 			'margin-top': '25px',
-			'color': '#fff',
 			'margin-bottom': '5px'
 		};
 		var listStyles = {
@@ -47,7 +46,6 @@
 			'margin-left': '20px',
 			'margin-right': '5px',
 			'padding': '6px 4px',
-			'color': '#fff',
 			'background': 'rgba(0,0,0,.8)',
 			'border': '1px solid #222',
 			'border-radius': '4px'
@@ -55,27 +53,28 @@
 		
 		//creating tooltip
 		var $tooltip = $('<div>');
-		$tooltip.css($.extend({}, commonStyles, {'text-align': 'center'}));
+		$tooltip.css($.extend({}, textStyles, blockStyles, {'text-align': 'center'}));
 		$tooltip.hide();
 		
 		//creating motion adjuster
 		var $adjuster = $('<div>');
-		$adjuster.css(commonStyles);
-		var $h1 = $('<h1>').html('TypeMotion').css(h1Styles);
-		var $measureTitle = $('<h2>').html('Measure').css($.extend({}, h2Styles, {'margin-top': 0}));
-		var $rythmTitle = $('<h2>').html('Vertical Rythm').css(h2Styles);
+		$adjuster.css($.extend({}, textStyles, blockStyles));
+		
+		var $h1 = $('<h1>').html('TypeMotion').css($.extend({}, textStyles, h1Styles));
+		var $measureTitle = $('<h2>').html('Measure').css($.extend({}, textStyles, h2Styles, {'margin-top': 0}));
+		var $rythmTitle = $('<h2>').html('Vertical Rythm').css($.extend({}, textStyles, h2Styles));
 		$adjuster.append($h1).append($measureTitle);
 		
 		var $liBase = $('<li>').css({'margin-bottom': '3px', 'list-style': 'none'});
 		
-		var $measureList = $('<ul>').css(listStyles);
+		var $measureList = $('<ul>').css($.extend({}, textStyles, listStyles));
 		$measureList.append($liBase.clone().html('<label>Average :</label> <span class="tm-average"></span>'));
 		$measureList.append($liBase.clone().html('<label>Minimum :</label> <span class="tm-min"></span>'));
 		$measureList.append($liBase.clone().html('<label>Maximum :</label> <span class="tm-max"></span>'));
 		$measureList.append($liBase.clone().html('<label>Total signs :</label> <span class="tm-signs"></span>'));
 		$adjuster.append($measureList);
 		
-		var $rythmList = $('<ul>').css(listStyles);
+		var $rythmList = $('<ul>').css($.extend({}, textStyles, listStyles));
 		$rythmList.append($liBase.clone().html('<label for="tm-fontsize">Font size :</label><input id="tm-fontsize" data-prop="font-size" type="text" />'));
 		$rythmList.append($liBase.clone().html('<label for="tm-lineheight">Line height :</label><input id="tm-lineheight" data-prop="line-height" type="text" />'));
 		$rythmList.append($liBase.clone().html('<label for="tm-wordspacing">Word spacing :</label><input id="tm-wordspacing" data-prop="word-spacing" type="text" />'));
@@ -88,14 +87,14 @@
 		$adjuster.hide();
 		
 		var $exitButton = $('<div>');
-		$exitButton.css($.extend({}, commonStyles, {'position': 'fixed', top: 10, right: 10, cursor: 'pointer', 'text-align': 'center'}));
+		$exitButton.css($.extend({}, textStyles, blockStyles, {'position': 'fixed', top: 10, right: 10, cursor: 'pointer', 'text-align': 'center'}));
 		$exitButton.html('Exit TypeMotion');
 		
 		$('body').append($tooltip).append($exitButton).append($adjuster);
 		
 		//live editinginputs
 		var $inputs = $('#tm-fontsize, #tm-lineheight, #tm-wordspacing, #tm-letterspacing');
-		$inputs.css(inputStyles);
+		$inputs.css($.extend({}, textStyles, inputStyles));
 		
 		//wrapping every word inside paragraphs inside spans
 		$.fn.spanify = function(wrapper){
