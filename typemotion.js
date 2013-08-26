@@ -43,6 +43,7 @@
 		var inputStyles = {
 			'width': '70px',
 			'text-align': 'right',
+			'font-size': '14px',
 			'margin-left': '20px',
 			'margin-right': '5px',
 			'padding': '6px 4px',
@@ -77,12 +78,14 @@
 		var $rythmList = $('<ul>').css($.extend({}, textStyles, listStyles));
 		$rythmList.append($liBase.clone().html('<label for="tm-fontsize">Font size :</label><input id="tm-fontsize" data-prop="font-size" type="text" />'));
 		$rythmList.append($liBase.clone().html('<label for="tm-lineheight">Line height :</label><input id="tm-lineheight" data-prop="line-height" type="text" />'));
+		$rythmList.append($liBase.clone().html('<label for="tm-margintop">Margin top :</label><input id="tm-margintop" data-prop="margin-top" type="text" />'));
+		$rythmList.append($liBase.clone().html('<label for="tm-marginbottom">Margin bottom :</label><input id="tm-marginbottom" data-prop="margin-bottom" type="text" />'));
 		$rythmList.append($liBase.clone().html('<label for="tm-wordspacing">Word spacing :</label><input id="tm-wordspacing" data-prop="word-spacing" type="text" />'));
 		$rythmList.append($liBase.clone().html('<label for="tm-letterspacing">Letter spacing :</label><input id="tm-letterspacing" data-prop="letter-spacing" type="text" />'));
 		$adjuster.append($rythmTitle);
 		$adjuster.append($rythmList);
 		
-		$adjuster.find('label').css({'min-width': '100px', 'display': 'inline-block', 'color': '#fff'});
+		$adjuster.find('label').css({'min-width': '130px', 'display': 'inline-block', 'color': '#fff'});
 		
 		$adjuster.hide();
 		
@@ -93,7 +96,7 @@
 		$('body').append($tooltip).append($exitButton).append($adjuster);
 		
 		//live editinginputs
-		var $inputs = $('#tm-fontsize, #tm-lineheight, #tm-wordspacing, #tm-letterspacing');
+		var $inputs = $('#tm-fontsize, #tm-lineheight, #tm-margintop, #tm-marginbottom, #tm-wordspacing, #tm-letterspacing');
 		$inputs.css($.extend({}, textStyles, inputStyles));
 		
 		//wrapping every word inside paragraphs inside spans
@@ -155,7 +158,6 @@
 				}
 				else {
 					//removing trailing space and any tabs or new lines
-					console.log(lineText);
 					lines.push(lineText.substring(0, lineText.length-1).replace(/(\t|\n)/g, ''));
 					lineText = (this.innerText || this.textContent)+' ';
 					currentBreak++;
@@ -200,7 +202,7 @@
 				return val;
 		
 			// get matched rules
-			var rules = getMatchedCSSRules(elem);
+			var rules = getMatchedCSSRules(elem) || [];
 		
 			// iterate the rules backwards
 			// rules are ordered by priority, highest last
@@ -280,12 +282,10 @@
 				$(this).off('mousemove', tooltipFollow);
 				
 				populateAdjuster(this);
-				$('#tm-fontsize').val(getMatchedStyle(this, 'font-size'));
-				$('#tm-lineheight').val(getMatchedStyle(this, 'line-height'));
-				$('#tm-wordspacing').val(getMatchedStyle(this, 'word-spacing'));
-				$('#tm-letterspacing').val(getMatchedStyle(this, 'letter-spacing'));
-				
-				event.stopPropagation();
+				var elem = this;
+				$inputs.each(function(){
+					this.value = getMatchedStyle(elem, $(this).data('prop'));
+				});
 			}
 		};
 		
