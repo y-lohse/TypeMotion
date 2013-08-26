@@ -20,7 +20,7 @@
 			'background': '#242424',
 			'border': '1px solid rgba(255,255,255,.3)',
 			'border-radius': '10px',
-			'z-index:': 15000
+			'z-index': 15000
 		};
 		var h1Styles = {
 			'font-size': '26px',
