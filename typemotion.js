@@ -130,7 +130,7 @@
 				$spans = $this.find('span.'+spanClass),
 				prevOffset = $spans.first().offset().top,
 				lineBreaks = [];
-			//@TODO : measure dif between first and last
+			
 			$spans.each(function(index){
 				var currentOffset = $(this).offset().top;
 				if (currentOffset > prevOffset){
@@ -138,6 +138,7 @@
 					lineBreaks.push(index);
 				}
 			});
+			if (lineBreaks.length === 0) lineBreaks.push($spans.length-1);//in case of one-liner
 			
 			//retrieving the actual lines of text
 			var lines = [];
@@ -148,13 +149,14 @@
 				if (index < lineBreaks[currentBreak]){
 					lineText += this.textContent+' ';
 				}
-				else if (currentBreak >= lineBreaks.length){
+				else if (currentBreak > 0 && currentBreak >= lineBreaks.length){
 					//the last line is ignored as it will probably be way shorter
 					//than the rest and thus screw up the stats
 					return false;
 				}
 				else {
 					//removing trailing space and any tabs or new lines
+					console.log(lineText);
 					lines.push(lineText.substring(0, lineText.length-1).replace(/(\t|\n)/g, ''));
 					lineText = (this.innerText || this.textContent)+' ';
 					currentBreak++;
